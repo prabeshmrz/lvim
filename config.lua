@@ -1,4 +1,6 @@
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
+vim.opt.titlestring = "nvim - %f" -- what the title of the window will be set to
+vim.opt.relativenumber = true -- set relative numbered lines
 
 -- general
 lvim.format_on_save = true
