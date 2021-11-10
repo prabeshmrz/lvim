@@ -1,4 +1,5 @@
 {
   "java.saveActions.organizeImports": true,
-  "java.signatureHelp.enabled": true
+  "java.signatureHelp.enabled": true,
+  "java.jdt.ls.vmargs": "-javaagent:/home/lucifer/.local/share/nvim/lsp_servers/jdtls/lombok.jar"
 }
