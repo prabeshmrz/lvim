@@ -115,7 +115,9 @@ lvim.plugins = {
         load = {
           ["core.defaults"] = {},
           ["core.concealer"] = {},
-          ["core.tangle"] = {}
+          ["core.tangle"] = {},
+          ["core.export"] = {},
+          ["core.export.markdown"] = {},
         }
       }
     end, -- run require("neorg").setup()
