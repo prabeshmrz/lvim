@@ -35,21 +35,22 @@ tangle: ./config.lua
 * AUTOCOMMANDS
   (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
 
+  Automatically tangling and exporting the markdown file if the filename matches pattern "README.norg"
   @code lua
   vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = "README.norg",
     callback = function()
       vim.api.nvim_command("Neorg tangle current-file")
+      vim.api.nvim_command("Neorg export to-file README.md")
     end,
   })
   @end
 
-  #tangle none
+  Let treesitter use bash highlight for zsh files as well
   @code lua
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "zsh",
     callback = function()
-      -- let treesitter use bash highlight for zsh files as well
       require("nvim-treesitter.highlight").attach(0, "bash")
     end,
   })

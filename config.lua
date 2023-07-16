@@ -5,6 +5,13 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "README.norg",
   callback = function()
     vim.api.nvim_command("Neorg tangle current-file")
+    vim.api.nvim_command("Neorg export to-file README.md")
+  end,
+})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "zsh",
+  callback = function()
+    require("nvim-treesitter.highlight").attach(0, "bash")
   end,
 })
 lvim.log.level = "info"

@@ -34,20 +34,22 @@ vim.opt.relativenumber = true
 
 (`:help autocmd`) https://neovim.io/doc/user/autocmd.html
 
+Automatically tangling and exporting the markdown file if the filename matches pattern "README.norg"
 ```lua
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "README.norg",
   callback = function()
     vim.api.nvim_command("Neorg tangle current-file")
+    vim.api.nvim_command("Neorg export to-file README.md")
   end,
 })
 ```
 
-``` lua
+Let treesitter use bash highlight for zsh files as well
+```lua
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "zsh",
   callback = function()
-    -- let treesitter use bash highlight for zsh files as well
     require("nvim-treesitter.highlight").attach(0, "bash")
   end,
 })
