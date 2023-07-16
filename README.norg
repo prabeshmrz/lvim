@@ -29,6 +29,8 @@ tangle: ./config.lua
   vim.opt.shiftwidth = 2
   vim.opt.tabstop = 2
   vim.opt.relativenumber = true
+  vim.o.wrap = true
+  vim.o.linebreak = true
   @end
 
 
@@ -41,6 +43,7 @@ tangle: ./config.lua
     pattern = "README.norg",
     callback = function()
       vim.api.nvim_command("Neorg tangle current-file")
+      vim.api.nvim_command("LvimReload")
       vim.api.nvim_command("Neorg export to-file README.md")
     end,
   })

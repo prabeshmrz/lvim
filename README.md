@@ -26,6 +26,8 @@
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
 vim.opt.relativenumber = true
+vim.o.wrap = true
+vim.o.linebreak = true
 ```
 
 
@@ -40,6 +42,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "README.norg",
   callback = function()
     vim.api.nvim_command("Neorg tangle current-file")
+    vim.api.nvim_command("LvimReload")
     vim.api.nvim_command("Neorg export to-file README.md")
   end,
 })
