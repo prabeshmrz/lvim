@@ -3,64 +3,167 @@ title: Prabesh's Neovim Config
 description: Prabesh's Neovim Config Using Neorg
 authors: Prabesh Maharjan
 created: 2023-07-12
-updated: 2023-07-15
+updated: 2023-07-16
 version: 1.1.1
-tangle: ./test.lua
+tangle: ./config.lua
 @end
 
-* Table of Contents
-• {* BASIC SETTINGS}
-• {** VIM OPTIONS}
-• {** GENERAL}
-• {** KEYMAPPINGS}
-• {*** LEADER KEY}
-• {*** GENERAL}
-• {* PLUGINS}
+* TABLE OF CONTENTS
+  • {* VIM OPTIONS}
+  • {* AUTOCOMMANDS}
+  • {* GENERAL}
+  • {* GENERIC LSP}
+  • {** DISABLE AUTOMATIC INSTALLATION OF SERVERS}
+  • {** CONFIGURE A SERVER MANUALLY}
+  • {** LINTERS, FORMATTERS AND CODE-ACTIONS}
+  • {* KEYMAPPINGS}
+  • {** LEADER KEY}
+  • {** GENERAL}
+  • {** WHICH KEY}
+  • {* TREESITER}
+  • {* PLUGINS}
 
-* BASIC SETTINGS
-** VIM OPTIONS
+* VIM OPTIONS
+ `lvim` is the global options object
+  @code lua
+  vim.opt.shiftwidth = 2
+  vim.opt.tabstop = 2
+  vim.opt.relativenumber = true
+  @end
+
+
+* AUTOCOMMANDS
+  (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
+
+  @code lua
+  vim.api.nvim_create_autocmd("BufWritePost", {
+    pattern = "README.norg",
+    callback = function()
+      vim.api.nvim_command("Neorg tangle current-file")
+    end,
+  })
+  @end
+
+  #tangle none
+  @code lua
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "zsh",
+    callback = function()
+      -- let treesitter use bash highlight for zsh files as well
+      require("nvim-treesitter.highlight").attach(0, "bash")
+    end,
+  })
+  @end
+
+* GENERAL
+  @code lua
+  lvim.log.level = "info"
+  lvim.format_on_save = {
+    enabled = true,
+    pattern = "*.lua",
+    timeout = 1000,
+  }
+  @end
+
+  to disable icons and use a minimalist setup, uncomment the following
+  #tangle none
+  @code lua
+  lvim.use_icons = false
+  @end
+
+  @code lua
+  lvim.colorscheme = "tokyonight-night"
+
+  lvim.builtin.alpha.active = true
+  lvim.builtin.alpha.mode = "dashboard"
+  lvim.builtin.terminal.active = true
+  lvim.builtin.nvimtree.setup.view.side = "left"
+  lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+  @end
+
+* GENERIC LSP
+** DISABLE AUTOMATIC INSTALLATION OF SERVERS
+
+   #tangle none
    @code lua
-   vim.opt.shiftwidth = 2
-   vim.opt.tabstop = 2
-   vim.opt.relativenumber = true
+   lvim.lsp.installer.setup.automatic_installation = false
+   @end
+
+** CONFIGURE A SERVER MANUALLY
+   IMPORTANT: Requires `:LvimCacheReset` to take effect. See the full default list `:lua =lvim.lsp.automatic_configuration.skipped_servers`
+
+   #tangle none
+   @code lua
+   vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
+   local opts = {} -- check the lspconfig documentation for a list of all possible options
+   require("lvim.lsp.manager").setup("pyright", opts)
+   @end
+
+   Remove a server from the skipped list, e.g. eslint, or emmet_ls. IMPORTANT: Requires `:LvimCacheReset` to take effect. `:LvimInfo` lists which server(s) are skipped for the current filetype
+
+   #tangle none
+   @code lua
+   lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
+     return server ~= "emmet_ls"
+   end, lvim.lsp.automatic_configuration.skipped_servers)
+   @end
+
+** LINTERS, FORMATTERS AND CODE-ACTIONS
+
+   #tangle none
+   @code lua
+   local formatters = require "lvim.lsp.null-ls.formatters"
+   formatters.setup {
+     { command = "stylua" },
+     {
+       command = "prettier",
+       extra_args = { "--print-width", "100" },
+       filetypes = { "typescript", "typescriptreact" },
+     },
+   }
+   local linters = require "lvim.lsp.null-ls.linters"
+   linters.setup {
+     { command = "flake8", filetypes = { "python" } },
+     {
+       command = "shellcheck",
+       args = { "--severity", "warning" },
+     },
+   }
+   local code_actions = require "lvim.lsp.null-ls.code_actions"
+   code_actions.setup {
+     {
+       exe = "eslint",
+       filetypes = { "typescript", "typescriptreact" },
+     },
+   }
+   @end
+
+* KEYMAPPINGS
+** LEADER KEY
+   @code lua
+   lvim.leader = "space"
    @end
 
 ** GENERAL
+   Making life easire by setting these keybindings to save, cycle buffers, easy escaping and toggling terminal.
+
    @code lua
-   lvim.log.level = "info"
-   lvim.format_on_save = {
-     enabled = true,
-     pattern = "*.lua",
-     timeout = 1000,
-   }
-   -- lvim.use_icons = false
-
-   lvim.colorscheme = "tokyonight-night"
-
-   lvim.builtin.alpha.active = true
-   lvim.builtin.alpha.mode = "dashboard"
-   lvim.builtin.terminal.active = true
-   lvim.builtin.nvimtree.setup.view.side = "left"
-   lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+   lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+   lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
+   lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
+   lvim.keys.insert_mode["jk"] = "<ESC>"
+   lvim.keys.insert_mode["kj"] = "<ESC>"
+   lvim.keys.normal_mode["<C-t>"] = ":ToggleTerm<CR>"
    @end
 
-** KEYMAPPINGS
-*** LEADER KEY
-    @code lua
-    lvim.leader = "space"
-    @end
+** WHICH KEY
+   Use which-key to add extra bindings with the leader-key prefix
 
-*** GENERAL
-    Making life easire by setting these keybindings to save, cycle buffers, easy escaping and toggling terminal.
-
-    @code lua
-    lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
-    lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
-    lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
-    lvim.keys.insert_mode["jk"] = "<ESC>"
-    lvim.keys.insert_mode["kj"] = "<ESC>"
-    lvim.keys.normal_mode["<C-t>"] = ":ToggleTerm<CR>"
-    @end
+   #tangle none
+   @code lua
+   lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
+   lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
+   @end
 
 * TREESITER
   Automatically install missing parsers when entering buffer
@@ -74,8 +177,6 @@ tangle: ./test.lua
   @code lua
   lvim.builtin.treesitter.ensure_installed = { "comment", "markdown_inline", "regex" }
   @end
-
-
 
 * PLUGINS
   @code lua
@@ -92,6 +193,8 @@ tangle: ./test.lua
             ["core.defaults"] = {},
             ["core.concealer"] = {},
             ["core.tangle"] = {},
+            ["core.export"] = {},
+            ["core.export.markdown"] = {},
           }
         }
       end, -- run require("neorg").setup()
