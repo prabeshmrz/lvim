@@ -67,7 +67,7 @@ tangle: ./config.lua
   @end
 
   to disable icons and use a minimalist setup, uncomment the following
-  #tangle none
+  #tangle.none
   @code lua
   lvim.use_icons = false
   @end
@@ -85,7 +85,7 @@ tangle: ./config.lua
 * GENERIC LSP
 ** DISABLE AUTOMATIC INSTALLATION OF SERVERS
 
-   #tangle none
+   #tangle.none
    @code lua
    lvim.lsp.installer.setup.automatic_installation = false
    @end
@@ -93,7 +93,7 @@ tangle: ./config.lua
 ** CONFIGURE A SERVER MANUALLY
    IMPORTANT: Requires `:LvimCacheReset` to take effect. See the full default list `:lua =lvim.lsp.automatic_configuration.skipped_servers`
 
-   #tangle none
+   #tangle.none
    @code lua
    vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
    local opts = {} -- check the lspconfig documentation for a list of all possible options
@@ -102,7 +102,7 @@ tangle: ./config.lua
 
    Remove a server from the skipped list, e.g. eslint, or emmet_ls. IMPORTANT: Requires `:LvimCacheReset` to take effect. `:LvimInfo` lists which server(s) are skipped for the current filetype
 
-   #tangle none
+   #tangle.none
    @code lua
    lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
      return server ~= "emmet_ls"
@@ -111,7 +111,7 @@ tangle: ./config.lua
 
 ** LINTERS, FORMATTERS AND CODE-ACTIONS
 
-   #tangle none
+   #tangle.none
    @code lua
    local formatters = require "lvim.lsp.null-ls.formatters"
    formatters.setup {
@@ -160,7 +160,7 @@ tangle: ./config.lua
 ** WHICH KEY
    Use which-key to add extra bindings with the leader-key prefix
 
-   #tangle none
+   #tangle.none
    @code lua
    lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
    lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
@@ -174,7 +174,7 @@ tangle: ./config.lua
   @end
 
   Always installed on startup, useful for parsers without a strict filetype
-  #tangle none
+  #tangle.none
   @code lua
   lvim.builtin.treesitter.ensure_installed = { "comment", "markdown_inline", "regex" }
   @end
