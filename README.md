@@ -15,6 +15,7 @@
 • [LEADER KEY](#leader-key)
 • [GENERAL](#general)
 • [WHICH KEY](#which-key)
+• [THEME](#theme)
 • [TREESITER](#treesiter)
 • [PLUGINS](#plugins)
 
@@ -76,8 +77,6 @@ lvim.use_icons = false
 ```
 
 ```lua
-lvim.colorscheme = "tokyonight-night"
-
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
@@ -101,7 +100,7 @@ lvim.lsp.installer.setup.automatic_installation = false
 IMPORTANT: Requires `:LvimCacheReset` to take effect. See the full default list `:lua =lvim.lsp.automatic_configuration.skipped_servers`
 
 ``` lua
-vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright", "jdtls" })
 local opts = {} -- check the lspconfig documentation for a list of all possible options
 require("lvim.lsp.manager").setup("pyright", opts)
 ```
@@ -179,6 +178,32 @@ lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Project
 ```
 
 
+# THEME
+
+```lua
+lvim.colorscheme = "catppuccin-mocha"
+
+native_lsp = {
+  enabled = true,
+  virtual_text = {
+    errors = { "italic" },
+    hints = { "italic" },
+    warnings = { "italic" },
+    information = { "italic" },
+  },
+  underlines = {
+    errors = { "underline" },
+    hints = { "underline" },
+    warnings = { "underline" },
+    information = { "underline" },
+  },
+  inlay_hints = {
+    background = true,
+  },
+}
+```
+
+
 # TREESITER
 
 Automatically install missing parsers when entering buffer
@@ -198,6 +223,8 @@ lvim.builtin.treesitter.ensure_installed = { "comment", "markdown_inline", "rege
 ```lua
 lvim.plugins = {
   { "folke/tokyonight.nvim" },
+  { "marko-cerovac/material.nvim" },
+  { "catppuccin/nvim" },
   { "lervag/vimtex" },
   {
     "nvim-neorg/neorg",
@@ -215,5 +242,12 @@ lvim.plugins = {
       }
     end, -- run require("neorg").setup()
   },
+  {
+    "norcalli/nvim-colorizer.lua",
+    config = function()
+      require("colorizer").setup()
+    end,
+  },
+  { "mfussenegger/nvim-jdtls" },
 }
 ```

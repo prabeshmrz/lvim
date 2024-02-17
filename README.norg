@@ -3,7 +3,7 @@ title: Prabesh's Neovim Config
 description: Prabesh's Neovim Config Using Neorg
 authors: Prabesh Maharjan
 created: 2023-07-12
-updated: 2023-07-16
+updated: 2024-02-17T14:21:06+0530
 version: 1.1.1
 tangle: ./config.lua
 @end
@@ -20,6 +20,7 @@ tangle: ./config.lua
   • {** LEADER KEY}
   • {** GENERAL}
   • {** WHICH KEY}
+  • {* THEME}
   • {* TREESITER}
   • {* PLUGINS}
 
@@ -76,8 +77,6 @@ tangle: ./config.lua
   @end
 
   @code lua
-  lvim.colorscheme = "tokyonight-night"
-
   lvim.builtin.alpha.active = true
   lvim.builtin.alpha.mode = "dashboard"
   lvim.builtin.terminal.active = true
@@ -98,7 +97,7 @@ tangle: ./config.lua
 
    #tangle.none
    @code lua
-   vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
+   vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright", "jdtls" })
    local opts = {} -- check the lspconfig documentation for a list of all possible options
    require("lvim.lsp.manager").setup("pyright", opts)
    @end
@@ -169,6 +168,30 @@ tangle: ./config.lua
    lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
    @end
 
+* THEME
+  @code lua
+  lvim.colorscheme = "catppuccin-mocha"
+
+  native_lsp = {
+    enabled = true,
+    virtual_text = {
+      errors = { "italic" },
+      hints = { "italic" },
+      warnings = { "italic" },
+      information = { "italic" },
+    },
+    underlines = {
+      errors = { "underline" },
+      hints = { "underline" },
+      warnings = { "underline" },
+      information = { "underline" },
+    },
+    inlay_hints = {
+      background = true,
+    },
+  }
+  @end
+
 * TREESITER
   Automatically install missing parsers when entering buffer
   @code lua
@@ -186,6 +209,8 @@ tangle: ./config.lua
   @code lua
   lvim.plugins = {
     { "folke/tokyonight.nvim" },
+    { "marko-cerovac/material.nvim" },
+    { "catppuccin/nvim" },
     { "lervag/vimtex" },
     {
       "nvim-neorg/neorg",
@@ -203,5 +228,12 @@ tangle: ./config.lua
         }
       end, -- run require("neorg").setup()
     },
+    {
+      "norcalli/nvim-colorizer.lua",
+      config = function()
+        require("colorizer").setup()
+      end,
+    },
+    { "mfussenegger/nvim-jdtls" },
   }
   @end

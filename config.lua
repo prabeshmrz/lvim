@@ -3,6 +3,7 @@ vim.opt.tabstop = 2
 vim.opt.relativenumber = true
 vim.o.wrap = true
 vim.o.linebreak = true
+
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "README.norg",
   callback = function()
@@ -11,36 +12,64 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     vim.api.nvim_command("Neorg export to-file README.md")
   end,
 })
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "zsh",
   callback = function()
     require("nvim-treesitter.highlight").attach(0, "bash")
   end,
 })
+
 lvim.log.level = "info"
 lvim.format_on_save = {
   enabled = true,
   pattern = "*.lua",
   timeout = 1000,
 }
-lvim.colorscheme = "tokyonight-night"
 
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+
 lvim.leader = "space"
+
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.insert_mode["jk"] = "<ESC>"
 lvim.keys.insert_mode["kj"] = "<ESC>"
 lvim.keys.normal_mode["<C-t>"] = ":ToggleTerm<CR>"
+
+lvim.colorscheme = "catppuccin-mocha"
+
+native_lsp = {
+  enabled = true,
+  virtual_text = {
+    errors = { "italic" },
+    hints = { "italic" },
+    warnings = { "italic" },
+    information = { "italic" },
+  },
+  underlines = {
+    errors = { "underline" },
+    hints = { "underline" },
+    warnings = { "underline" },
+    information = { "underline" },
+  },
+  inlay_hints = {
+    background = true,
+  },
+}
+
 lvim.builtin.treesitter.auto_install = true
 -- lvim.builtin.treesitter.ignore_install = { "haskell" }
+
 lvim.plugins = {
   { "folke/tokyonight.nvim" },
+  { "marko-cerovac/material.nvim" },
+  { "catppuccin/nvim" },
   { "lervag/vimtex" },
   {
     "nvim-neorg/neorg",
@@ -58,4 +87,11 @@ lvim.plugins = {
       }
     end, -- run require("neorg").setup()
   },
+  {
+    "norcalli/nvim-colorizer.lua",
+    config = function()
+      require("colorizer").setup()
+    end,
+  },
+  { "mfussenegger/nvim-jdtls" },
 }
